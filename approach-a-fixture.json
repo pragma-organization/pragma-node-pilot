@@ -1,0 +1,20 @@
+{
+  "repositorySlug": "pragma-fargate-node-pilot",
+  "stage": "initial",
+  "productionPath": "src/work-item-policy.js",
+  "testPath": "test/work-item-policy.test.js",
+  "initialRequest": "Add a production hasTitle policy and matching native tests. Keep the branch in one draft pull request.",
+  "initialBehavior": {"operation": "hasTitle", "input": {"title": "Pilot"}, "expected": true},
+  "requiredChangeKinds": ["production", "tests"],
+  "nativeCommands": ["npm ci", "npm run build", "npm test"],
+  "nativeCommandArgv": [["npm", "ci"], ["npm", "run", "build"], ["npm", "test"]],
+  "implementationRounds": [
+    {"id": "canonicalize-whitespace", "request": "Canonicalize surrounding title whitespace in WorkItemPolicy and add a native regression test that fails on the current parent.", "productionPath": "src/work-item-policy.js", "testPath": "test/work-item-policy.test.js", "behavior": {"operation": "canonicalizeTitle", "input": {"title": "  Pilot  "}, "expected": "Pilot"}, "prewrittenPatch": false},
+    {"id": "reject-blank-title", "request": "Reject blank titles in WorkItemPolicy and add a native regression test that fails on the current parent.", "productionPath": "src/work-item-policy.js", "testPath": "test/work-item-policy.test.js", "behavior": {"operation": "hasTitle", "input": {"title": "   "}, "expected": false}, "prewrittenPatch": false},
+    {"id": "priority-aliases", "request": "Normalize documented priority aliases high/hi and low/lo in WorkItemPolicy and add native regression tests.", "productionPath": "src/work-item-policy.js", "testPath": "test/work-item-policy.test.js", "behavior": {"operation": "normalizePriority", "input": {"priority": "hi"}, "expected": "high"}, "prewrittenPatch": false},
+    {"id": "case-insensitive-tags", "request": "Deduplicate WorkItemPolicy tags case-insensitively while preserving first spelling; add a native regression test.", "productionPath": "src/work-item-policy.js", "testPath": "test/work-item-policy.test.js", "behavior": {"operation": "normalizeTags", "input": {"tags": ["Bug", "bug"]}, "expected": ["Bug"]}, "prewrittenPatch": false},
+    {"id": "bounded-title-length", "request": "Apply a 120-character title limit without rolling back newer behavior; add a native regression test.", "productionPath": "src/work-item-policy.js", "testPath": "test/work-item-policy.test.js", "behavior": {"operation": "canonicalizeTitle", "input": {"titleLength": 121}, "expected": 120}, "prewrittenPatch": false},
+    {"id": "deterministic-tag-order", "request": "Make WorkItemPolicy tag ordering deterministic and add a native regression test.", "productionPath": "src/work-item-policy.js", "testPath": "test/work-item-policy.test.js", "behavior": {"operation": "normalizeTags", "input": {"tags": ["zeta", "alpha"]}, "expected": ["alpha", "zeta"]}, "prewrittenPatch": false},
+    {"id": "crlf-unicode-integration", "request": "Repair the real CI failure by handling CRLF and Unicode title input in WorkItemPolicy; add the failing integration regression to the native suite.", "productionPath": "src/work-item-policy.js", "testPath": "test/work-item-policy.test.js", "behavior": {"operation": "canonicalizeTitle", "input": {"title": "\r\nCrème brûlée\r\n"}, "expected": "Crème brûlée"}, "prewrittenPatch": false}
+  ]
+}

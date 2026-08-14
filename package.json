@@ -1,0 +1,10 @@
+{
+  "name": "pragma-fargate-node-pilot",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "node --check src/work-item-policy.js",
+    "test": "node --test"
+  }
+}
